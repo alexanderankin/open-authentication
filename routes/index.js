@@ -6,4 +6,6 @@ router.get('/', function(req, res, next) {
   res.render('index', {});
 });
 
+router.use('/install', require('./install'));
+
 module.exports = router;

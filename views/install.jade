@@ -1,0 +1,67 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  h2 Installation
+  p The following database error was detected, reinstall the db? Please refer to the environment variable configuration:
+
+  form(method='post')
+    | <div class="form-group">
+    |   <label for="formGroupExampleInput"><code>reset_user</code></label>
+    |   <input type="text" class="form-control" id="formGroupExampleInput" placeholder="reset_user" name="user">
+    | </div>
+    | <div class="form-group">
+    |   <label for="formGroupExampleInput2"><code>reset_pass</code></label>
+    |   <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="reset_pass" name="pass">
+    | </div>
+    | <div class="form-group">
+    |   <input type="submit" class="btn btn-primary" value="Reset Database" />
+    | </div>
+
+  style.
+    .highlight {
+      border: 1px solid grey;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px;
+      width: fit-content;
+    }
+
+  if (credentials)
+    p.highlight Those credentials weren't recognized.
+  if (error)
+    p.highlight There was an error: #{error}.
+
+  h3 Error Codes
+
+  | <table class="table table-inverse">
+  |   <thead>
+  |     <tr>
+  |       <th>Code</th>
+  |       <th>Meaning</th>
+  |     </tr>
+  |   </thead>
+  |   <tbody>
+  |     <tr>
+  |       <td>ER_BAD_DB_ERROR</td>
+  |       <td>
+  |         The Database name specified by environment variable mysqldb
+  |         (<code>#{dbName}</code>) was not found. Due to varying database
+  |         systems, this step must be done manually.
+  |        </td>
+  |     </tr>
+  |     <tr>
+  |       <td>ER_ACCESS_DENIED_ERROR</td>
+  |       <td>Incorrect user/pass combo supplied in configuration file.</td>
+  |     </tr>
+  |     <tr>
+  |       <td>ETIMEDOUT</td>
+  |       <td>Db connection timed out, check host in configuration file.</td>
+  |     </tr>
+  |     <tr>
+  |       <td>No Table</td>
+  |       <td>A table from the schema is missing, try reinstalling.</td>
+  |     </tr>
+  |   </tbody>
+  | </table>
