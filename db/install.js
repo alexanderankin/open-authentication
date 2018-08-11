@@ -9,8 +9,8 @@ var tables = {
   }),
   users: db.schema.createTable('users', function (t) {
     t.string('user_id', 80).notNullable().primary();
-    t.string('username', 80);
-    t.string('password', 80);
+    t.string('username', 80).unique();
+    t.string('password', 32);
     t.string('first_name', 80);
     t.string('last_name', 80);
     t.string('email', 80);
@@ -24,6 +24,8 @@ var tables = {
     t.string('grant_types', 80);
     t.string('scope', 4000);
     t.string('user_id', 80);
+    t.integer('access_token_lifetime');
+    t.integer('refresh_token_lifetime');
   }),
   access_tokens: db.schema.createTable('access_tokens', function (t) {
     t.string('access_token', 40).notNullable().primary();
