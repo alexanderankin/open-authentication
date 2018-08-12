@@ -1,4 +1,44 @@
 #!/usr/bin/env node
+require('dotenv').config({
+  path: require('path').join(__dirname, '..', '.env')
+});
+
+var md5 = require('md5');
+
 var db = require('../db');
 
 console.log("initializing database with debugging data");
+
+function newUser(user, done) {
+  console.log(process.env['salt'] + user.password);
+  var values = {
+    user_id        : md5(user.username),
+    username       : user.username,
+    password       : md5(process.env['salt'] + user.password),
+    first_name     : user.first_name,
+    last_name      : user.last_name,
+    email          : user.email,
+    email_verified : user.email_verified,
+    scope          : user.scope,
+  }
+  db('users')
+    .insert(values)
+    .then(r => done(null, r))
+    .catch(done);
+}
+
+if (require.main === module) {
+  newUser({
+    username       : 'ok',
+    password       : 'sure',
+    first_name     : 'a',
+    last_name      : 'z',
+    email          : '',
+    email_verified : true,
+    scope          : 'read write playgame'
+  }, function (err, res) {
+    if (err) throw err;
+
+    console.log(res);
+  });
+}
