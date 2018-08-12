@@ -1,0 +1,44 @@
+extends layout
+
+block dashboardcontent
+  h3 Clients #[small #[a(href='/dashboard/clients') new]]
+
+  if (clients)
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          each clientHeader in clientHeaders
+            <th>#{clientHeader}</th>
+        </tr>
+      </thead>
+      <tbody>
+        each client in clients
+          <tr>
+            each clientHeader in clientHeaders
+              <td>#{client[clientHeader]}</td>
+          </tr>
+      </tbody>
+    </table>
+  else
+    p No Client Applications set up.
+
+  h3 Sessions
+
+  if (tokens)
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          each sessionHeader in sessionHeaders
+            <th>#{sessionHeader}</th>
+        </tr>
+      </thead>
+      <tbody>
+        each session in sessions
+          <tr>
+            each sessionHeader in sessionHeaders
+              <td>#{client[sessionHeader]}</td>
+          </tr>
+      </tbody>
+    </table>
+  else
+    p No active Access Tokens set up.

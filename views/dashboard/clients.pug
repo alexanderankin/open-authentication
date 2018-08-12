@@ -1,0 +1,85 @@
+extends layout
+
+block dashboardcontent
+
+  //- <div class="alert alert-warning" role="alert">
+  //-   A simple warning alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+  //- </div>
+
+  //- each warning in ['simple warning alert with an example link. Give it a click if you like.']
+  if (errors)
+    each warning in errors
+      div(class="alert alert-warning", role="alert")= warning
+
+  <form method="post">
+    <div class="form-group row">
+      <label for="inputClientId" class="col-sm-2 form-control-label">Client Id</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputClientId" name="inputClientId" placeholder="Client Id" #{values && values.inputClientId ? 'value=' + values.inputClientId : ''}>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputClientSecret" class="col-sm-2 form-control-label">Client Secret</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputClientSecret" name="inputClientSecret" placeholder="Client Secret" #{values && values.inputClientSecret ? 'value=' + values.inputClientSecret : ''}>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputClientRedirect" class="col-sm-2 form-control-label">Client Redirect Endpoint</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputClientRedirect" name="inputClientRedirect" placeholder="http://localhost:8080/callback" #{values && values.inputClientRedirect ? 'value=' + values.inputClientRedirect : ''}>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label class="col-sm-2 form-control-label">Enable client authentication flows</label>
+      <label class="col-sm-2 custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" name="grantAuthorization_code" #{values && values.grantAuthorization_code ? 'checked' : ''}>
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Authorization Code</span>
+      </label>
+      <label class="col-sm-2 custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" name="grantClient_credentials" #{values && values.grantClient_credentials ? 'checked': ''}>
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Client Credentials</span>
+      </label>
+      <label class="col-sm-2 custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" name="grantRefresh_token" #{values && values.grantRefresh_token ? 'checked': ''}>
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Refresh Token</span>
+      </label>
+      <label class="col-sm-2 custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" name="grantPassword" #{values && values.grantPassword ? 'checked': ''}>
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Password</span>
+      </label>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 form-control-label">Enable your scopes for this app:</label>
+      //- each scope in scopes
+      each scope in ['read', 'write']
+        <label class="col-sm-2 custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="scope#{scope}" #{values && values['scope' + scope] ? 'checked': ''}>
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">#{scope}</span>
+        </label>
+    </div>
+
+    <div class="form-group row">
+      <label for="inputAccessTokenLifetime" class="col-sm-2 form-control-label">Specify Access Token lifetime (s)</label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="inputAccessTokenLifetime" name="inputAccessTokenLifetime" placeholder="Time (in seconds)" value="#{(values && values.inputAccessTokenLifetime) || '3600'}">
+      </div>
+      <label for="inputRefreshTokenLifetime" class="col-sm-2 form-control-label">Specify Refresh Token lifetime (s)</label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="inputRefreshTokenLifetime" name="inputRefreshTokenLifetime" placeholder="Time (in seconds)" value="#{(values && values.inputRefreshTokenLifetime) || '86400'}">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-secondary">Add Client App</button>
+      </div>
+    </div>
+  </form>
