@@ -28,7 +28,8 @@ router.get('/', function(req, res, next) {
     if (err) { return next(err); }
 
     var user = results[0].pop();
-    if (!user) return next(new Error('No user for cookie'));
+    // if (!user) return next(new Error('No user for cookie'));
+    if (!user) return res.redirect('/logout');
 
     var clients = (results[1] && results[1][0]) ? results[1] : [{}];
     var clientHeaders = Object.keys(clients[0]);
