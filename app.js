@@ -1,3 +1,4 @@
+// load variables from .env
 var path = require('path');
 require('dotenv').config({
   path: path.join(__dirname, '.env')
@@ -16,8 +17,10 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// set defaults, useful for initial scaffolded views
 app.locals['title'] = 'Attempt-8-10';
 
+// initialize OAuth server library
 app.oauth = new OAuthServer({
   model: require('./db/model'),
   useErrorHandler: true, 

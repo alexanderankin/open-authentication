@@ -8,14 +8,17 @@ router.get('/', function(req, res, next) {
   res.render('index', {});
 });
 
+// form (get/post + confirm) for installing the database schema
 router.use('/install', require('./install'));
 
+// form (get/ppost) for logging in
 router.use('/login', require('./login'));
 router.use('/logout', function (req, res, next) {
   res.clearCookie('user_id', util.cookieOptions.clear);
   res.redirect('/');
 });
 
+// protects everything in dashboard routes
 router.use('/dashboard', function(req, res, next) {
   if (req.signedCookies.user_id) { return next(); }
 
