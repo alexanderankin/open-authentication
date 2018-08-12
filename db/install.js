@@ -43,7 +43,15 @@ var tables = {
     t.string('redirect_uri', 2000).notNullable();
     t.timestamp('expires').notNullable();
     t.string('scope', 4000);
-    t.string('id_token', 1000);
+  }),
+  refresh_tokens: db.schema.createTable('refresh_tokens', function (t) {
+    t.string('refresh_token', 40).notNullable().primary();
+    t.string('client_id', 80);
+    t.foreign('client_id').references('clients.client_id');
+    t.string('user_id', 80);
+    t.foreign('user_id').references('users.user_id');
+    t.timestamp('expires').notNullable();
+    t.string('scope', 4000);
   }),
   jti: db.schema.createTable('jti', function (t) {
     t.string('issuer', 80).notNullable();
@@ -62,13 +70,6 @@ var tables = {
     t.string('public_key', 2000);
     t.string('private_key', 2000);
     t.string('encryption_algorithm', 100).defaultTo("RS256");
-  }),
-  refresh_tokens: db.schema.createTable('refresh_tokens', function (t) {
-    t.string('refresh_token', 40).notNullable().primary();
-    t.string('client_id', 80);
-    t.string('user_id', 80);
-    t.timestamp('expires').notNullable();
-    t.string('scope', 4000);
   }),
   scopes: db.schema.createTable('scopes', function (t) {
     t.string('scope', 80).notNullable().primary();
