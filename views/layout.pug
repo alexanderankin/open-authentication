@@ -4,4 +4,6 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    h1 #{title} #[span(style='font-size:.5em;') #[a(href='/', tabindex=-1) Home]]
+    
     block content

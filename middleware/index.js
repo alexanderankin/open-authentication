@@ -8,17 +8,17 @@ function checkInstall(req, res, next) {
     return next();
   }
 
-  knex.schema.hasTable('settings')
-    .then(exists => {
-      if (exists) {
-        next();
-      } else {
-        res.redirect('/install?' + qs.stringify({ error: 'No Table' }));
-      }
-    })
-    .catch(error => {
+  knex.schema.hasTable('settings').asCallback(function (error, exists) {
+    if (error) {
       res.redirect('/install?' + qs.stringify({ error: error.code }));
-    });
+    }
+
+    if (exists) {
+      next();
+    } else {
+      res.redirect('/install?' + qs.stringify({ error: 'No Table' }));
+    }
+  });
 }
 
 module.exports = {

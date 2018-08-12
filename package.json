@@ -13,10 +13,10 @@
     "express": "~4.16.0",
     "express-oauth-server": "^2.0.0",
     "http-errors": "~1.6.2",
-    "jade": "~1.11.0",
     "knex": "^0.15.2",
     "md5": "^2.2.1",
-    "morgan": "~1.9.0"
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11"
   },
   "devDependencies": {
     "faker": "^4.1.0"
