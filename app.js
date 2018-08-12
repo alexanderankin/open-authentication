@@ -26,12 +26,12 @@ app.oauth = new OAuthServer({
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env['cookie_secret'] || 'keyboard ninja'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(middleware.checkInstall);
