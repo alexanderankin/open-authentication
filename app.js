@@ -20,7 +20,7 @@ app.locals['title'] = 'Attempt-8-10';
 
 app.oauth = new OAuthServer({
   model: require('./db/model'),
-  useErrorHandler: false, 
+  useErrorHandler: true, 
   continueMiddleware: false
 });
 
@@ -39,9 +39,9 @@ app.use(middleware.checkInstall);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/oauth/authorize', app.oauth.authorize());
-app.use('/oauth/authenticate', app.oauth.authenticate());
-app.use('/oauth/token', app.oauth.token());
+app.use('/oauth/oauth2/authorize', app.oauth.authorize());
+app.use('/oauth/oauth2/authenticate', app.oauth.authenticate());
+app.use('/oauth/oauth2/token', app.oauth.token());
 
 
 // catch 404 and forward to error handler
