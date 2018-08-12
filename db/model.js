@@ -136,7 +136,7 @@ Model.prototype.getClient = function(clientId, clientSecret, done) {
   var query = db('clients as c')
     .select('*')
     .where(whereObj);
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
