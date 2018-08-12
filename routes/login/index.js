@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
     })
     .then(function (rows) {
       if (rows[0]) {
-        res.cookie('user_id', util.cookieOptions.send);
+        res.cookie('user_id', rows[0].user_id, util.cookieOptions.send);
         res.redirect('/dashboard');
       } else {
         res.redirect('/login?' + qs.stringify({
@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
     })
     .catch(function (error) {
       res.redirect('/login?' + qs.stringify({
-        message: `Credentials (${req.body.username}) not recognized.`
+        message: '' + error
       }));
     })
 })

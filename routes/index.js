@@ -22,6 +22,6 @@ router.use('/dashboard', function(req, res, next) {
   var error = new Error('Unauthorized user for dashboard');
   error.status = 403;
   next(error);
-}/*, require('./dashboard')*/);
+}, require('./dashboard'));
 
 module.exports = router;
