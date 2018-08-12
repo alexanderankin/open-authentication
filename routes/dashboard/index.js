@@ -121,8 +121,7 @@ router.post('/clients', function(req, res, next) {
 
   query
     .then(r => {
-      console.log('success!!!');
-      res.render('dashboard/clients', values);
+      res.redirect('/dashboard');
     })
     .catch(e => {
       if (e.code === 'ER_DUP_ENTRY')
