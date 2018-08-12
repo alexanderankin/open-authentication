@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+var db = require('../db');
+
+console.log("initializing database with debugging data");

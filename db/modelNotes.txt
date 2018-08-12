@@ -1,0 +1,123 @@
+/**
+ * calling code expects: 
+ */
+generateAccessToken(client = {client: id: client.client_id }, user = {}, scope = '', function(err, string) {})
+generateRefreshToken(client = {client: id: client.client_id }, user = {}, scope = '', function(err, string) {})
+generateAuthorizationCode(client = {client: id: client.client_id }, user = {}, scope = '', function(err, string) {})
+
+getAccessToken(accessToken = '', function (err, token) {
+  token = {
+    accessToken: accessToken, // same as passed in
+    accessTokenExpiresAt: access_token.expires, // Date
+    scope: '',
+    client: { id: client.client_id },
+    user: { /**/ }
+  };
+})
+
+getRefreshToken(refreshToken = '', function(err, token) {
+  token = {
+    refreshToken: refreshToken, // same as passed in
+    refreshTokenExpiresAt: refresh_token.expires, // Date
+    scope: '',
+    client: { id: client.client_id },
+    user: { /**/ }
+  }
+})
+
+getAuthorizationCode(authorizationCode = '', function (err, code) {
+  code = {
+    code: authorizationCode, // same as passed in
+    expiresAt: authorization_codes.expires,
+    redirectUri: '',
+    scope: '',
+    client: { id: client.client_id },
+    user: { /**/ }
+  }
+})
+
+getClient(clientId = '', clientSecret = '', function (err, client) {
+  client: {
+    id: client.client_id,
+    redirectUris: [''], // redirectUris: [client.redirect_uri], 
+    grants: [''], // client.grant_types.split(' ')
+    accessTokenLifetime: client.access_token_lifetime,
+    refreshTokenLifetime: client.refresh_token_lifetime
+  };
+})
+
+getUser(username, password, function (err, user) {
+  user = { /**/ };
+})
+
+getUserFromClient(client, function (err, user) {
+  user = {}; // select * from users where user_id = (select user_id from clients where client_id = client);
+})
+
+token = {
+  accessToken: '',
+  accessTokenExpiresAt: Date,
+  refreshToken: '',
+  refreshTokenExpiresAt: Date,
+  scope: ''
+}
+saveToken(token, client, user, function (err, token) {
+  token = {
+    accessToken: '',
+    accessTokenExpiresAt: Date,
+    refreshToken: '',
+    refreshTokenExpiresAt: Date,
+    scope: '',
+    client: { id: client.client_id },
+    user: { /**/ }
+  }
+})
+
+code = {
+  authorizationCode: '',
+  expiresAt: Date,
+  redirectUri: '',
+  scope: ''
+}
+saveAuthorizationCode(code, client = {id: client.client_id}, user ={}, function (err, code) {
+  code = {
+    authorizationCode: '',
+    expiresAt: Date,
+    redirectUri: '',
+    scope: ''
+    client: { id: client.client_id },
+    user: {/*....*/}
+  }
+})
+
+token = {
+  refreshToken: '',
+  refreshTokenExpiresAt: Date,
+  scope: '',
+  client: { id: client.client_id },
+  user: { /*...*/ }
+}
+revokeToken(token, function (err, success) {
+  success = true || false;
+})
+
+code = { authorizationCode: '' }
+revokeAuthorizationCode(code, function(err, success) { success = true || false; })
+
+user = { /*...*/ }
+client = { id: client.client_id },
+scope = [].join(' ')
+validateScope(user, client, scope, function (err, scopes) {
+  // scopes = [].join(' ');
+  return scopes; // default behavior
+})
+
+// function verifyScope(token, scope) {
+//   if (!token.scope) {
+//     return false;
+//   }
+//   let requestedScopes = scope.split(' ');
+//   let authorizedScopes = token.scope.split(' ');
+//   return requestedScopes.every(s => authorizedScopes.indexOf(s) >= 0);
+// }
+verifyScope(accessToken, scope, [callback])

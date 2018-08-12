@@ -7,6 +7,7 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var OAuthServer = require('express-oauth-server');
 
 var middleware = require('./middleware');
 
@@ -16,6 +17,12 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 app.locals['title'] = 'Attempt-8-10';
+
+app.oauth = new OAuthServer({
+  model: require('./db/model'),
+  useErrorHandler: false, 
+  continueMiddleware: false
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +38,11 @@ app.use(middleware.checkInstall);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use('/oauth/authorize', app.oauth.authorize());
+app.use('/oauth/authenticate', app.oauth.authenticate());
+app.use('/oauth/token', app.oauth.token());
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
