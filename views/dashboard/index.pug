@@ -3,7 +3,7 @@ extends layout
 block dashboardcontent
   h3 Clients #[small #[a(href='/dashboard/clients') new]]
 
-  if (clients)
+  if (clients && clients.length && Object.keys(clients[0]).length)
     <table class="table table-striped table-hover">
       <thead>
         <tr>
@@ -24,7 +24,7 @@ block dashboardcontent
 
   h3 Sessions
 
-  if (tokens)
+  if (sessions && sessions.length && Object.keys(sessions[0]).length)
     <table class="table table-striped table-hover">
       <thead>
         <tr>
@@ -41,4 +41,4 @@ block dashboardcontent
       </tbody>
     </table>
   else
-    p No active Access Tokens set up.
+    p No active Access Tokens granted.

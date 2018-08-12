@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var async = require('async');
 var url = require('url');
 
 var util = require('../../util');
@@ -12,17 +13,37 @@ var db = require('../../db');
 
 /* GET /dashboard. */
 router.get('/', function(req, res, next) {
-  db('users')
-    .select('*')
-    .where({ user_id: req.signedCookies['user_id'] })
-    .asCallback(function (err, rows) {
-      if (err) { return next(err); }
+  var userQuery = db('users')
+    .select('*').where({ user_id: req.signedCookies['user_id'] });
+  var clientsQuery = db('clients')
+    .select('*').where({ user_id: req.signedCookies['user_id'] });
+  var atokensQuery = db('access_tokens')
+    .select('*').where({ user_id: req.signedCookies['user_id'] });
+  
+  async.series([
+    function(done) { userQuery.asCallback(done); },
+    function(done) { clientsQuery.asCallback(done); },
+    function(done) { atokensQuery.asCallback(done); }
+  ], function (err, results) {
+    if (err) { return next(err); }
 
-      // var greeting = [ rows[0].first_name, rows[0].last_name ].join(' ');
-      // res.send(`<h1>Everything is working, ${greeting} </h1>`);
+    var user = results[0].pop();
+    if (!user) return next(new Error('No user for cookie'));
 
-      res.render('dashboard/index');
+    var clients = (results[1] && results[1][0]) ? results[1] : [{}];
+    var clientHeaders = Object.keys(clients[0]);
+
+    // tweak: skip some of them
+    var skip = ['user_id', 'access_token_lifetime', 'refresh_token_lifetime'];
+    clientHeaders = clientHeaders.filter(h => skip.indexOf(h) < 0);
+
+    var sessions = (results[2] && results[2][0]) ? results[2] : [{}];
+    var sessionHeaders = Object.keys(sessions[0]);
+
+    res.render('dashboard/index', {
+      user, clients, clientHeaders, sessions, sessionHeaders
     });
+  });
 });
 
 router.get('/clients', function (req, res, next) {
