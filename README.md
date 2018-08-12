@@ -9,6 +9,7 @@ In no particular order:
 * check `template.env`
 * yarn install && yarn start
 * create a database ahead of time if psql or mysql
+* TODO SIGNUPS meanwhile checkout `bin/seed`
 
 ## Development
 
