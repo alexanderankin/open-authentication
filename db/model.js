@@ -125,10 +125,18 @@ Model.prototype.getAuthorizationCode = function(authorizationCode, done) {
 };
 
 Model.prototype.getClient = function(clientId, clientSecret, done) {
+  // console.log(arguments);
+
+  // refactored this way because clientSecret sometimes null???
+  var whereObj = { 'c.client_id': clientId };
+  if (clientSecret) {
+    whereObj['c.client_secret'] = clientSecret;
+  }
+
   var query = db('clients as c')
     .select('*')
-    .where({ 'c.client_id': clientId, 'c.client_secret': clientSecret });
-  // console.log(query.toString());
+    .where(whereObj);
+  console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -299,4 +307,4 @@ Model.prototype.verifyScope = function(token, scope, done) {
 //   user: { name: 'ok' }
 // }, function(e, r) {console.log(arguments)});
 
-module.exports = Model;
+module.exports = new Model();
