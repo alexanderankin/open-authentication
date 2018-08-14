@@ -229,7 +229,7 @@ Model.prototype.saveAuthorizationCode = function(code, client, user, done) {
       'expires': code.expiresAt,
       'scope': code.scope
     });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function () {
@@ -266,9 +266,9 @@ Model.prototype.revokeAuthorizationCode = function(code, done) {
     .catch(done);
 };
 
-Model.prototype.validateScope = function(user, client, scope, done) {
-  scopes = [].join(' ');
-};
+// Model.prototype.validateScope = function(user, client, scope, done) {
+//   scopes = [].join(' ');
+// };
 
 Model.prototype.verifyScope = function(token, scope, done) {
   if (!token.scope)
