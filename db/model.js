@@ -218,7 +218,15 @@ Model.prototype.saveToken = function(token, client, user, done) {
     function saveRefreshToken(done) {
       refreshQuery.asCallback(done);
     }
-  ], done);
+  ], function (err) {
+    console.log("saveToken returning arguments", arguments);
+    if (err) { return done(err); }
+
+    var doneVal = Object.assign({}, token);
+    doneVal.client = client;
+    doneVal.user = user;
+    done(null, doneVal);
+  });
 };
 
 Model.prototype.saveAuthorizationCode = function(code, client, user, done) {
@@ -269,9 +277,9 @@ Model.prototype.revokeAuthorizationCode = function(code, done) {
     .catch(done);
 };
 
-Model.prototype.validateScope = function(user, client, scope, done) {
-  scopes = [].join(' ');
-};
+// Model.prototype.validateScope = function(user, client, scope, done) {
+//   scopes = [].join(' ');
+// };
 
 Model.prototype.verifyScope = function(token, scope, done) {
   if (!token.scope)

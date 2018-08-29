@@ -21,7 +21,8 @@ app.locals['title'] = 'Attempt-8-10';
 app.oauth = new OAuthServer({
   model: require('./db/model'),
   useErrorHandler: true, 
-  continueMiddleware: false
+  continueMiddleware: false,
+  allowBearerTokensInQueryString: true
 });
 
 // view engine setup
@@ -74,10 +75,11 @@ app.use("/oauth/authorize", function(req, res, next) {
         if (user) {
           console.log('line 75');
           res.cookie('user_id', user.user_id, require('./util').cookieOptions.send);
+          req.tempUser = user.user_id;
         }
 
         console.log('line 79')
-        res.redirect(req.originalUrl);
+        next();
       })
       .catch(next);
   }
@@ -86,15 +88,32 @@ app.use("/oauth/authorize", function(req, res, next) {
 }, app.oauth.authorize({
   authenticateHandler: {
     handle: function (req, response) {
-      return { user_id: req.signedCookies.user_id };
+      console.log(req.signedCookies);
+      return {
+        user_id: req.signedCookies.user_id || req.tempUser
+      };
     }
   }
-}));
-app.post("/oauth/token", /*function(r, rs, n) { console.log("hello"); n(); },*/ app.oauth.token());
+}), function (req, res, next) {
+  console.log("line 97");
+});
+app.use("/oauth/token", function (req, res, next) {
+  var tokenFn = app.oauth.token();
+  console.log("in token route");
+  // tokenFn(req, res).then(function () {
+  //   console.log("token arguments", arguments);
+  // })
+
+  tokenFn(req, res, function () {
+    console.log("token arguments", arguments);
+  })
+});
 
 // app.use('/oauth/oauth2/authorize', app.oauth.authorize());
 // app.use('/oauth/oauth2/token', app.oauth.token());
-app.use('/oauth/oauth2/authenticate', app.oauth.authenticate());
+app.use('/oauth/oauth2/authenticate', app.oauth.authenticate(), function (req, res, next) {
+  res.json({a:"secret stuff"});
+});
 
 
 // catch 404 and forward to error handler
