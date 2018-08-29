@@ -5,6 +5,7 @@ var util = require('../util');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  if (req.signedCookies.user_id) { return res.redirect('/dashboard'); }
   res.render('index', {});
 });
 
