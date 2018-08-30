@@ -14,7 +14,7 @@ function generateToken(done) {
   });
 }
 
-// generateToken((e, t) => { if (e) throw e; console.log('token', t); });
+// /*generateToken((e, t) => { if (e) throw e; console.log('token', t); });*/
 
 function Model() {}
 
@@ -117,6 +117,8 @@ Model.prototype.getAuthorizationCode = function(authorizationCode, done) {
           client: { id: token.client_id },
           user: token
         });
+
+        return null;
       } else {
         done(null, false);
       }
@@ -124,11 +126,9 @@ Model.prototype.getAuthorizationCode = function(authorizationCode, done) {
     .catch(done);
 };
 
-Model.prototype.getClient = function(clientId, clientSecret, done) {
-  // console.log(arguments);
-
+Model.prototype.getClient = function(id, clientSecret, done) {
   // refactored this way because clientSecret sometimes null???
-  var whereObj = { 'c.client_id': clientId };
+  var whereObj = { 'c.client_id': id };
   if (clientSecret) {
     whereObj['c.client_secret'] = clientSecret;
   }
@@ -143,7 +143,7 @@ Model.prototype.getClient = function(clientId, clientSecret, done) {
       var client = rows[0];
       if (client) {
         done(null, {
-          id: clientId,
+          id,
           redirectUris: [client.redirect_uri],
           grants: client.grant_types.split(' '),
           accessTokenLifetime: client.access_token_lifetime,
@@ -216,7 +216,15 @@ Model.prototype.saveToken = function(token, client, user, done) {
     function saveRefreshToken(done) {
       refreshQuery.asCallback(done);
     }
-  ], done);
+  ], function (err) {
+    // console.log("saveToken returning arguments", arguments);
+    if (err) { return done(err); }
+
+    var doneVal = Object.assign({}, token);
+    doneVal.client = client;
+    doneVal.user = user;
+    done(null, doneVal);
+  });
 };
 
 Model.prototype.saveAuthorizationCode = function(code, client, user, done) {
@@ -256,13 +264,14 @@ Model.prototype.revokeToken = function(token, done) {
 };
 
 Model.prototype.revokeAuthorizationCode = function(code, done) {
+  // console.log(arguments);
   var query = db('authorization_codes')
     .delete()
-    .where({ 'authorization_code': code.authorizationCode });
+    .where({ 'authorization_code': code.code });
   // console.log(query.toString());
 
   query
-    .then((number) => done(null, number === 0))
+    .then((number) => done(null, number !== 0))
     .catch(done);
 };
 
