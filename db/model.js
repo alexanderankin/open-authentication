@@ -14,7 +14,7 @@ function generateToken(done) {
   });
 }
 
-// generateToken((e, t) => { if (e) throw e; console.log('token', t); });
+// /*generateToken((e, t) => { if (e) throw e; console.log('token', t); });*/
 
 function Model() {}
 
@@ -53,7 +53,7 @@ Model.prototype.getAccessToken = function(accessToken, done) {
     .where({
       'at.access_token': accessToken
     })
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -78,7 +78,7 @@ Model.prototype.getRefreshToken = function(refreshToken, done) {
     .select('*')
     .join('users as u', 'u.user_id', '=', 'rt.user_id')
     .where({ 'rt.refresh_token': refreshToken });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -103,7 +103,7 @@ Model.prototype.getAuthorizationCode = function(authorizationCode, done) {
     .select('*')
     .join('users as u', 'u.user_id', '=', 'ac.user_id')
     .where({ 'ac.authorization_code': authorizationCode });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -126,11 +126,9 @@ Model.prototype.getAuthorizationCode = function(authorizationCode, done) {
     .catch(done);
 };
 
-Model.prototype.getClient = function(clientId, clientSecret, done) {
-  // console.log(arguments);
-
+Model.prototype.getClient = function(id, clientSecret, done) {
   // refactored this way because clientSecret sometimes null???
-  var whereObj = { 'c.client_id': clientId };
+  var whereObj = { 'c.client_id': id };
   if (clientSecret) {
     whereObj['c.client_secret'] = clientSecret;
   }
@@ -138,14 +136,14 @@ Model.prototype.getClient = function(clientId, clientSecret, done) {
   var query = db('clients as c')
     .select('*')
     .where(whereObj);
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
       var client = rows[0];
       if (client) {
         done(null, {
-          id: clientId,
+          id,
           redirectUris: [client.redirect_uri],
           grants: client.grant_types.split(' '),
           accessTokenLifetime: client.access_token_lifetime,
@@ -165,7 +163,7 @@ Model.prototype.getUser = function(username, password, done) {
       'u.username': username,
       'u.password': md5(process.env['salt'] + password)
     });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -181,7 +179,7 @@ Model.prototype.getUserFromClient = function(client, done) {
     .where({
       'c.client_id': client.id
     });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function (rows) {
@@ -199,7 +197,7 @@ Model.prototype.saveToken = function(token, client, user, done) {
       'expires': token.accessTokenExpiresAt,
       'scope': token.scope
     });
-  console.log(accessQuery.toString());
+  // console.log(accessQuery.toString());
 
   var refreshQuery = db('refresh_tokens')
     .insert({
@@ -209,7 +207,7 @@ Model.prototype.saveToken = function(token, client, user, done) {
       'expires': token.refreshTokenExpiresAt,
       'scope': token.scope
     });
-  console.log(refreshQuery.toString());
+  // console.log(refreshQuery.toString());
 
   async.series([
     function saveAccessToken(done) {
@@ -219,7 +217,7 @@ Model.prototype.saveToken = function(token, client, user, done) {
       refreshQuery.asCallback(done);
     }
   ], function (err) {
-    console.log("saveToken returning arguments", arguments);
+    // console.log("saveToken returning arguments", arguments);
     if (err) { return done(err); }
 
     var doneVal = Object.assign({}, token);
@@ -239,7 +237,7 @@ Model.prototype.saveAuthorizationCode = function(code, client, user, done) {
       'expires': code.expiresAt,
       'scope': code.scope
     });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then(function () {
@@ -258,7 +256,7 @@ Model.prototype.revokeToken = function(token, done) {
   var query = db('refresh_tokens')
     .delete()
     .where({ 'refresh_token': token.refreshToken });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then((number) => done(null, number === 0))
@@ -266,11 +264,11 @@ Model.prototype.revokeToken = function(token, done) {
 };
 
 Model.prototype.revokeAuthorizationCode = function(code, done) {
-  console.log(arguments);
+  // console.log(arguments);
   var query = db('authorization_codes')
     .delete()
     .where({ 'authorization_code': code.code });
-  console.log(query.toString());
+  // console.log(query.toString());
 
   query
     .then((number) => done(null, number !== 0))

@@ -65,7 +65,6 @@ app.use("/oauth/authorize", function(req, res, next) {
   if (req.signedCookies.user_id) return next();
   if (req.method === 'GET') return res.send(form);
   if (req.method === 'POST') {
-    console.log('line67');
     require('./db')('users').select('user_id').where({
       username: req.body.username,
       password: require('md5')(process.env['salt'] + req.body.password)
@@ -73,12 +72,10 @@ app.use("/oauth/authorize", function(req, res, next) {
       .then(rows => {
         var user = rows.pop();
         if (user) {
-          console.log('line 75');
           res.cookie('user_id', user.user_id, require('./util').cookieOptions.send);
           req.tempUser = user.user_id;
         }
 
-        console.log('line 79')
         next();
       })
       .catch(next);
@@ -87,30 +84,11 @@ app.use("/oauth/authorize", function(req, res, next) {
   else next(new Error('Neither GET nor POST'));
 }, app.oauth.authorize({
   authenticateHandler: {
-    handle: function (req, response) {
-      console.log(req.signedCookies);
-      return {
-        user_id: req.signedCookies.user_id || req.tempUser
-      };
-    }
+    handle: (req) => ({ user_id: req.signedCookies.user_id || req.tempUser })
   }
-}), function (req, res, next) {
-  console.log("line 97");
-});
-app.use("/oauth/token", function (req, res, next) {
-  var tokenFn = app.oauth.token();
-  console.log("in token route");
-  // tokenFn(req, res).then(function () {
-  //   console.log("token arguments", arguments);
-  // })
+}));
 
-  tokenFn(req, res, function () {
-    console.log("token arguments", arguments);
-  })
-});
-
-// app.use('/oauth/oauth2/authorize', app.oauth.authorize());
-// app.use('/oauth/oauth2/token', app.oauth.token());
+app.use("/oauth/token", app.oauth.token());
 app.use('/oauth/oauth2/authenticate', app.oauth.authenticate(), function (req, res, next) {
   res.json({a:"secret stuff"});
 });
